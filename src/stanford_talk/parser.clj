@@ -10,9 +10,10 @@
 (def props (Properties.))
 (.setProperty props "annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref, sentiment")
 
+;; AHA! pipeline is the first verbose function.
 (def pipeline (StanfordCoreNLP. props))
 
-(defn ->text-data [tokens sent-num]
+#_(defn ->text-data [tokens sent-num]
   (mapv (fn [t] {:sent-num sent-num
                 :token (.get t CoreAnnotations$TextAnnotation)
                 :pos  (.get t CoreAnnotations$PartOfSpeechAnnotation)
@@ -20,7 +21,7 @@
                 :lemma  (.get t CoreAnnotations$LemmaAnnotation)
                 :sentiment (.get t SentimentCoreAnnotations$SentimentClass)}) tokens))
 
-(defn ->chain-refs [chain sentences]
+#_(defn ->chain-refs [chain sentences]
  (mapv (fn [c] (let [mentions (.getMentionsInTextualOrder(.getValue c))]
                 (mapv (fn [m] (let [set-num (dec (.sentNum m))
                                    tokens (.get (.get sentences set-num) CoreAnnotations$TokensAnnotation)
@@ -37,7 +38,7 @@
        (.entrySet chain)))
 
 
-(defn process-text [text]
+#_(defn process-text [text]
   (let [annotation (Annotation. text)
         _ (.annotate pipeline annotation)
         sentences (.get annotation CoreAnnotations$SentencesAnnotation)
