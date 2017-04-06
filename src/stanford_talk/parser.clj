@@ -28,8 +28,20 @@
 (def props (Properties.))
 (.setProperty props "annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref, sentiment")
 
+;; "UGLY" solution:
+;; https://groups.google.com/d/msg/clojure/N9ss43lnd78/wKnU36bsHJkJ
+(let [err System/err] 
+  (System/setErr (java.io.PrintStream. (java.io.FileOutputStream. "/dev/null"))) 
+
 ;; AHA! pipeline is the first verbose function.
 (deliver stp-err (with-err-str (deliver pipeline (StanfordCoreNLP. props))))
+
+
+  (System/setErr err))
+
+
+
+
 ;;(deliver stp-out (with-out-str (deliver pipeline (StanfordCoreNLP. props))))
 
 
