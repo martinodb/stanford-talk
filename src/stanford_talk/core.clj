@@ -8,24 +8,35 @@
 
 
 
-(def load? true)
-;;(def stp-out (promise))
-;;(def stp-err (promise))
+(def load-mode :silent)
+
 
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
   (println "Hello, World!")
-  (if load? (do
+  
+  #_(if load? (do
   (println "loading")
   (require '[stanford-talk.parser :as stp])
-  ;;(deliver stp-out (with-out-str (require '[stanford-talk.parser :as stp])))
-  ;;(deliver stp-err (with-err-str (require '[stanford-talk.parser :as stp])))
+
   (println "done loading"))
   
   
   (do
   (println "not loading")
-  ;;(deliver stp-out "meh")
-  ;;(with-out-str (println "uh"))
-  )))
+  ))
+  
+  (case load-mode
+  
+    :none (do
+     (println "not loading"))
+    :silent (do
+      (println "loading, silent mode")
+      (let [err System/err] 
+         (System/setErr (java.io.PrintStream. (java.io.FileOutputStream. "/dev/null")))
+         (require '[stanford-talk.parser :as stp])
+         (System/setErr err)))
+    :verbose (do 
+      (println "loading, verbose mode")
+      (require '[stanford-talk.parser :as stp]))))

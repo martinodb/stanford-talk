@@ -6,37 +6,13 @@
                                   CoreAnnotations$NamedEntityTagAnnotation CoreAnnotations$LemmaAnnotation)
            (edu.stanford.nlp.dcoref CorefCoreAnnotations$CorefChainAnnotation)
            (edu.stanford.nlp.sentiment SentimentCoreAnnotations$SentimentClass)))
-           
-           
-
-
-
-;;(def stp-out (promise))
-;;(def stp-err (promise))
-(def pipeline (promise))
-
 
 (def props (Properties.))
 (.setProperty props "annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref, sentiment")
 
-;; "UGLY" solution:
-;; https://groups.google.com/d/msg/clojure/N9ss43lnd78/wKnU36bsHJkJ
-(let [err System/err] 
-  (System/setErr (java.io.PrintStream. (java.io.FileOutputStream. "/dev/null"))) 
+(def pipeline (StanfordCoreNLP. props))
 
-;; AHA! pipeline is the first verbose function.
-;;(deliver stp-err (with-err-str (deliver pipeline (StanfordCoreNLP. props))))
-(deliver pipeline (StanfordCoreNLP. props))
-
-  (System/setErr err))
-
-
-
-
-;;(deliver stp-out (with-out-str (deliver pipeline (StanfordCoreNLP. props))))
-
-
-#_(defn ->text-data [tokens sent-num]
+(defn ->text-data [tokens sent-num]
   (mapv (fn [t] {:sent-num sent-num
                 :token (.get t CoreAnnotations$TextAnnotation)
                 :pos  (.get t CoreAnnotations$PartOfSpeechAnnotation)
@@ -44,7 +20,7 @@
                 :lemma  (.get t CoreAnnotations$LemmaAnnotation)
                 :sentiment (.get t SentimentCoreAnnotations$SentimentClass)}) tokens))
 
-#_(defn ->chain-refs [chain sentences]
+(defn ->chain-refs [chain sentences]
  (mapv (fn [c] (let [mentions (.getMentionsInTextualOrder(.getValue c))]
                 (mapv (fn [m] (let [set-num (dec (.sentNum m))
                                    tokens (.get (.get sentences set-num) CoreAnnotations$TokensAnnotation)
@@ -61,7 +37,7 @@
        (.entrySet chain)))
 
 
-#_(defn process-text [text]
+(defn process-text [text]
   (let [annotation (Annotation. text)
         _ (.annotate pipeline annotation)
         sentences (.get annotation CoreAnnotations$SentencesAnnotation)
