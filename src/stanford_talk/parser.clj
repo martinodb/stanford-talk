@@ -34,8 +34,8 @@
   (System/setErr (java.io.PrintStream. (java.io.FileOutputStream. "/dev/null"))) 
 
 ;; AHA! pipeline is the first verbose function.
-(deliver stp-err (with-err-str (deliver pipeline (StanfordCoreNLP. props))))
-
+;;(deliver stp-err (with-err-str (deliver pipeline (StanfordCoreNLP. props))))
+(deliver pipeline (StanfordCoreNLP. props))
 
   (System/setErr err))
 
