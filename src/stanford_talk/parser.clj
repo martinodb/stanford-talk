@@ -6,12 +6,32 @@
                                   CoreAnnotations$NamedEntityTagAnnotation CoreAnnotations$LemmaAnnotation)
            (edu.stanford.nlp.dcoref CorefCoreAnnotations$CorefChainAnnotation)
            (edu.stanford.nlp.sentiment SentimentCoreAnnotations$SentimentClass)))
+           
+           
+
+(use '[clojure.repl :only (pst)])
+(defmacro with-err-str
+  "Evaluates exprs in a context in which *err* is bound to a fresh
+  StringWriter.  Returns the string created by any nested printing
+  calls."
+  [& body]
+  `(let [s# (new java.io.StringWriter)]
+     (binding [*err* s#]
+       ~@body
+       (str s#))))
+
+(def stp-out (promise))
+(def stp-err (promise))
+(def pipeline (promise))
+
 
 (def props (Properties.))
 (.setProperty props "annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref, sentiment")
 
 ;; AHA! pipeline is the first verbose function.
-(def pipeline (StanfordCoreNLP. props))
+(deliver stp-err (with-err-str (deliver pipeline (StanfordCoreNLP. props))))
+;;(deliver stp-out (with-out-str (deliver pipeline (StanfordCoreNLP. props))))
+
 
 #_(defn ->text-data [tokens sent-num]
   (mapv (fn [t] {:sent-num sent-num
