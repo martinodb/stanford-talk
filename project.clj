@@ -5,4 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [edu.stanford.nlp/stanford-corenlp "3.5.2"]
-                 [edu.stanford.nlp/stanford-corenlp "3.5.2" :classifier "models"]])
+                 [edu.stanford.nlp/stanford-corenlp "3.5.2" :classifier "models"]]
+  :main ^:skip-aot stanford-talk.core
+  :target-path "target/%s"
+  :profiles {:uberjar {:aot :all}})
