@@ -20,8 +20,8 @@
        ~@body
        (str s#))))
 
-(def stp-out (promise))
-(def stp-err (promise))
+;;(def stp-out (promise))
+;;(def stp-err (promise))
 (def pipeline (promise))
 
 

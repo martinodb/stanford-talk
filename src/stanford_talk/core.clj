@@ -19,8 +19,8 @@
 
 
 (def load? true)
-(def stp-out (promise))
-(def stp-err (promise))
+;;(def stp-out (promise))
+;;(def stp-err (promise))
 
 (defn -main
   "I don't do a whole lot ... yet."
@@ -28,8 +28,9 @@
   (println "Hello, World!")
   (if load? (do
   (println "loading")
-  (deliver stp-out (with-out-str (require '[stanford-talk.parser :as stp])))
-  (deliver stp-err (with-err-str (require '[stanford-talk.parser :as stp])))
+  (require '[stanford-talk.parser :as stp])
+  ;;(deliver stp-out (with-out-str (require '[stanford-talk.parser :as stp])))
+  ;;(deliver stp-err (with-err-str (require '[stanford-talk.parser :as stp])))
   (println "done loading"))
   
   
